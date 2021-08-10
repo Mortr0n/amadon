@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Order, Product
 
 def index(request):
@@ -7,10 +7,28 @@ def index(request):
     }
     return render(request, "store/index.html", context)
 
-def checkout(request):
-    quantity_from_form = int(request.POST["quantity"])
-    price_from_form = float(request.POST["price"])
-    total_charge = quantity_from_form * price_from_form
-    print("Charging credit card...")
-    Order.objects.create(quantity_ordered=quantity_from_form, total_price=total_charge)
-    return render(request, "store/checkout.html")
+def checkout(request, product_id):
+    this_product = Product.objects.get(id=product_id)
+    quantity_from_form = int(request.POST['quantity'])
+    price = float(this_product.price)
+    total_price = price * quantity_from_form
+    new_order = Order.objects.create(quantity_ordered=quantity_from_form, total_price=total_price)
+    
+    return redirect(f'/checkout/create/{new_order.id}')
+
+def order(request, order_id):
+    this_order = Order.objects.last()
+    order_total = 0
+    total_ordered = 0
+    for order in Order.objects.all():
+        order_total = order_total + order.total_price
+        total_ordered = total_ordered + order.quantity_ordered
+    
+    
+    context = {
+        'this_order' : this_order,
+        'quantity' : total_ordered,
+        'order_total' : order_total
+    }
+    
+    return render(request, "store/checkout.html", context)
