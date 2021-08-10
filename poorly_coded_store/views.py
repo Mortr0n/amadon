@@ -7,8 +7,8 @@ def index(request):
     }
     return render(request, "store/index.html", context)
 
-def checkout(request, product_id):
-    this_product = Product.objects.get(id=product_id)
+def checkout(request):
+    this_product = Product.objects.get(id=request.POST['product_id'])
     quantity_from_form = int(request.POST['quantity'])
     price = float(this_product.price)
     total_price = price * quantity_from_form

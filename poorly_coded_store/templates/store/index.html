@@ -35,16 +35,17 @@
                 <tbody>
                     {% for product in all_products %}
                     <tr>
-                        <form action="/checkout/{{product.id}}" method="post">
+                        <form action="/checkout" method="POST">
                             {% csrf_token %}
                             <td>{{product.description}}</td>
-                            <td><input type="hidden" name="price" value="{{product.id}}">{{product.price}}</td>
+                            <input type="hidden" name="product_id" value="{{product.id}}">
+                            <td>{{product.price}}</td>
                             <td><select name="quantity">
                                 <option value="1">1</option>              
                                 <option value="2">2</option>              
                                 <option value="3">3</option>              
                             </select></td>
-                            <td><button type="submit" class="btn btn-primary" value="{{product.id}}">Buy!</button></td>
+                            <td><button type="submit" class="btn btn-primary" >Buy!</button></td>
                         </form>
                     </tr>
                     {% endfor %}
